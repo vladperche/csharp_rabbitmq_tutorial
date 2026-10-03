@@ -26,11 +26,13 @@ If you are in another environment, in a Terminal console, just type:
 ## How to use it
 
 Send a POST request, to the `http//localhost:5169` with the JSON body, for example:
+```
 {
     "id": 1,
     "name": "Product name",
     "value": 18.99
 }
+```
 
 ## Logging
 
