@@ -1,0 +1,10 @@
+{
+    "name": "New Request",
+    "method": "GET",
+    "url": "{{base_url}}/api/health/check",
+    "query": {},
+    "headers": {
+        "Content-Type": "application/json"
+    },
+    "body": null
+}

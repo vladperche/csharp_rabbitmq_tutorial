@@ -1,0 +1,14 @@
+{
+    "name": "New Request",
+    "method": "POST",
+    "url": "{{base_url}}/api/product/create",
+    "query": {},
+    "headers": {
+        "Content-Type": "application/json"
+    },
+    "body": {
+        "id": "1",
+        "name": "Mechanical Keyboard",
+        "price": "18.99"
+    }
+}

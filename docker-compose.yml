@@ -1,0 +1,67 @@
+services:
+  rabbit:
+    image: rabbitmq:management
+    container_name: rabbitmq-server
+    hostname: ${RABBIT_HOST}
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBIT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBIT_PASS}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - rabbitmq-network
+    volumes:
+      - ${workspaceFolder}/dockerdata/rabbitmq:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 5s
+
+  producer:
+    build:
+      context: ./srcProducer
+      dockerfile: Dockerfile
+    container_name: rabbitmq-producer
+    hostname: rabbitmq-producer
+    environment:
+      - RABBIT_HOST=${RABBIT_HOST}
+      - RABBIT_PORT=${RABBIT_PORT}
+      - RABBIT_USER=${RABBIT_USER}
+      - RABBIT_PASS=${RABBIT_PASS}
+    ports:
+      - "${API_HTTP_PORT}:8080"
+    depends_on:
+      rabbit:
+        condition: service_healthy
+    volumes:
+      - ${workspaceFolder}/dockerdata/producer:/app/logs
+    networks:
+      - rabbitmq-network
+    restart: always
+
+  consumer:
+    build:
+      context: ./srcConsumer
+      dockerfile: Dockerfile
+    container_name: rabbitmq-consumer
+    hostname: rabbitmq-consumer
+    environment:
+      - RABBIT_HOST=${RABBIT_HOST}
+      - RABBIT_PORT=${RABBIT_PORT}
+      - RABBIT_USER=${RABBIT_USER}
+      - RABBIT_PASS=${RABBIT_PASS}
+    depends_on:
+      rabbit:
+        condition: service_healthy
+    volumes:
+      - ${workspaceFolder}/dockerdata/consumer:/app/logs
+    networks:
+      - rabbitmq-network
+    restart: always
+networks:
+  rabbitmq-network:
+    name: rabbitmq-network
+    driver: bridge

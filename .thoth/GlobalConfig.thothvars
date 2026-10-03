@@ -1,0 +1,6 @@
+{
+    "$shared": {},
+    "Local": {
+        "base_url": "http://localhost:5169"
+    }
+}
